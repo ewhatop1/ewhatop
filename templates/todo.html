@@ -31,13 +31,11 @@
         <h2 class="section-title todo-title">할 일 목록</h2>
         <div class="date"></div>
         <ol class="todo-list">
+          <!-- 할 일 목록이 반복문으로 들어가는 자리 -->
           {% for t in todos_today %}
             <li>
               <label class="todo-item">
-                <input type="checkbox"
-                  id="todo{{ t.id }}"
-                  {% if t.done %}checked{% endif %}
-                  onclick="markDone({{ t.id }}, this.checked)">
+                <input type="checkbox" id="todo{{ t.id }}">
                 <span>{{ t.task }}</span>
               </label>
             </li>
@@ -46,7 +44,7 @@
         <!-- 할 일 추가 버튼-->
         <form action="/add_todo" method="post" style="margin-top: 20px;">
           <input type="text" name="task" placeholder="할 일을 입력하세요" required>
-          <button type="submit" class="add-todo">+ 할 일 추가</button>
+          <button type="submit">+ 할 일 추가</button>
         </form>
       </div>
       <!-- 전에 못한 일 제목 위에 검정 구분선 -->
@@ -57,12 +55,9 @@
         <ul class="prev-todo-list">
           {% for pt in prev_todos %}
             <li>
-              <label class="todo-item">
-                <span>({{ pt.due_date.strftime('%Y-%m-%d') }}) {{ pt.task }}</span>
-                <input type="checkbox"
-                       id="prevtodo{{ pt.id }}"
-                       {% if pt.done %}checked{% endif %}
-                       onclick="markDone({{ pt.id }}, this.checked)">
+              <input type="checkbox" id="prev{{ loop.index }}">
+              <label for="prev{{ loop.index }}">
+                ({{ todo.due_date.strftime('%Y.%m.%d') }}) {{ todo.task }}
               </label>
             </li>
           {% endfor %}
@@ -73,35 +68,5 @@
   </div>
   <!-- todo-container div 닫힘 -->
 
-  <!-- 오늘 날짜만 JS로 표시 -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const dateDiv = document.querySelector(".date");
-      // 오늘 날짜 한국어로 표시
-      const today = new Date().toLocaleDateString("ko-KR", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        weekday: "long"
-      });
-      dateDiv.textContent = today;
-    });
-  </script>
-  <!-- 체크박스 AJAX 처리 -->
-  <script>
-    function markDone(todoId, checked) {
-      fetch('/todo/done', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({todo_id: todoId, done: checked})
-      })
-      .then(response => response.json())
-      .then(data => {
-        if(data.result !== 'success') {
-          alert('DB 갱신 실패!');
-        }
-      });
-    }
-  </script>
 </body>
 </html>
