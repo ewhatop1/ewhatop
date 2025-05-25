@@ -21,6 +21,10 @@ body {
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   width: 320px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 /* 타이틀 */
@@ -68,7 +72,15 @@ label {
   display: block;
 }
 
-/* 로그인 아이콘 (대체 가능) */
+/* 로그인 제목 */
+.login-form .title {
+  text-align: center;
+  font-size: 48px;
+  color: #333;
+  margin: 0 0 25px;
+}
+
+/* 로그인 아이콘 */
 .login-form::before {
   content: "📝";
   display: block;
