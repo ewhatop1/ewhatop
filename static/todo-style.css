@@ -134,3 +134,23 @@ body {
   width: 40%;
   margin-left: 0;
 }
+
+button[type="submit"] {
+  background-color: #376350;   /* 이화그린--기본색상 */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #2e4d3d;   /* 마우스를 올렸을 때 조금 더 진한 색 */
+}
+
+button[type="submit"]:active {
+  background-color: #1e3528;   /* 클릭 순간엔 더 어두운 색 */
+  transform: scale(0.97);      /* 눌리는 듯한 효과 */
+}
