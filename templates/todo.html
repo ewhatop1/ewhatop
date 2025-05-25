@@ -29,13 +29,14 @@
     <div class="main-sections">
       <div class="todo-list-section">
         <h2 class="section-title todo-title">할 일 목록</h2>
-        <div class="date"></div>
+        <div class="date">{{ today.strftime('%Y.%m.%d (%A)') }}</div> <!--★ 오늘 날짜 표시 -->
         <ol class="todo-list">
-          <!-- 할 일 목록이 반복문으로 들어가는 자리 -->
           {% for t in todos_today %}
             <li>
               <label class="todo-item">
-                <input type="checkbox" id="todo{{ t.id }}">
+                <input type="checkbox" id="todo{{ t.id }}"
+                  {% if t.done and t.done_date and t.done_date == today %}checked{% endif %}
+                  onchange="markDone({{ t.id }}, this.checked)">
                 <span>{{ t.task }}</span>
               </label>
             </li>
@@ -55,9 +56,11 @@
         <ul class="prev-todo-list">
           {% for pt in prev_todos %}
             <li>
-              <input type="checkbox" id="prev{{ loop.index }}">
-              <label for="prev{{ loop.index }}">
-                ({{ todo.due_date.strftime('%Y.%m.%d') }}) {{ todo.task }}
+              <input type="checkbox" id="prev{{ pt.id }}"
+                {% if pt.done and pt.done_date and pt.done_date == today %}checked{% endif %}
+                onchange="markDone({{ pt.id }}, this.checked)">
+              <label for="prev{{ pt.id }}">
+                ({{ pt.due_date.strftime('%Y.%m.%d') }}) {{ pt.task }}
               </label>
             </li>
           {% endfor %}
@@ -68,5 +71,7 @@
   </div>
   <!-- todo-container div 닫힘 -->
 
+  <!-- ★ todo-script.js 불러오기 -->
+  <script src="/static/todo-script.js"></script>
 </body>
 </html>
