@@ -86,12 +86,17 @@ def todo():
 
 @app.route('/todo/done', methods=['POST'])
 def mark_done():
-    todo_id = request.json.get('todo_id')
+    data = request.get_json()
+    todo_id = data.get('todo_id')
+    done = data.get('done', False)
+    print(f"[CHECK] 체크박스 요청: todo_id={todo_id}, done={done}")   # <-- 이 줄 추가!
     todo = Todo.query.get(todo_id)
     if todo:
-        todo.done = True
+        todo.done = done
         db.session.commit()
+        print(f"[UPDATE] DB 업데이트 완료: todo_id={todo_id}, done={done}")  # <-- 이 줄 추가!
         return jsonify({'result': 'success'})
+    print("[FAIL] 할 일 못 찾음!")   # <-- 이 줄 추가!
     return jsonify({'result': 'fail'}), 404
 
 @app.route('/logout')
