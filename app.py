@@ -1,18 +1,12 @@
-from flask import Flask, request, redirect, url_for, session, render_template, jsonify, flash, make_response
+from flask import Flask, request, redirect, url_for, session, render_template, jsonify, flash
 from models import db, User, Todo
 from sqlalchemy.exc import IntegrityError
 from datetime import date
-from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'your_secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db.init_app(app)
-
-@app.after_request #Content-Security-Policy(CSP) - XSS 방지
-def add_csp_headers(response):
-    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'"
-    return response
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -20,28 +14,19 @@ def login():
         login_id = request.form['loginId']
         action = request.form.get('action')
         print(f"로그인 시도: loginId={login_id}, action={action}")
-        
         if action == 'Login':
-            all_users = User.query.all()
-            
-            for user in all_users:
-                if check_password_hash(user.id_hash, login_id):
-                    session['username'] = login_id
-                    return redirect(url_for('todo')) #성공했으니 todo로 이동
-            flash("ID가 잘못되었습니다. 회원가입을 먼저 진행하세요.")
-            return redirect(url_for("login")) #실패하면 다시 메인(login) 페이지로 이동
-            
+            existing_user = User.query.filter_by(login_id=login_id).first()
+            if existing_user:
+                session['username'] = login_id
+                return redirect(url_for('todo'))
+            else:
+                flash("ID가 잘못되었습니다. 회원가입을 먼저 진행하세요.")
+                return render_template('login.html', login=False)
         elif action == 'Join':
-            # 입력받은 ID를 해시함
-            id_hash = generate_password_hash(login_id)
-            
-            # 중복 방지 위해 모든 유저 불러서 check
-            all_users = User.query.all()
-            for user in all_users:
-                if check_password_hash(user.id_hash, login_id):
-                    flash("이미 존재하는 ID입니다. 다른 ID로 시도하세요.")
-                    return redirect(url_for('login'))
-                    
+            existing_user = User.query.filter_by(login_id=login_id).first()
+            if existing_user:
+                flash("이미 존재하는 ID입니다. 다른 ID로 시도하세요.")
+                return render_template('login.html', login=False)
             # 사용자 정보 DB에 저장
             new_user = User(login_id=login_id)
             db.session.add(new_user)
