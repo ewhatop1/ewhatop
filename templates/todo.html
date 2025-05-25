@@ -90,8 +90,8 @@
         const newId = "todo" + Date.now();
         newTodo.innerHTML = `
           <label class="todo-item">
-            <span>${task}</span>
             <input type="checkbox" id="${newId}">
+            <span>${task}</span>
           </label>
         `;
         todoList.appendChild(newTodo);
