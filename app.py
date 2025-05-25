@@ -1,11 +1,11 @@
-from flask import Flask, request, redirect, url_for, session, render_template
-from models import db, User
-from flask import flash
+from flask import Flask, request, redirect, url_for, session, render_template, jsonify, flash
+from models import db, User, Todo
 from sqlalchemy.exc import IntegrityError
+from datetime import date
 
-app = Flask(__name__) #오로라
+app = Flask(__name__)
 app.secret_key = 'your_secret'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'  # 또는 MySQL URI
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db.init_app(app)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -18,16 +18,16 @@ def login():
             existing_user = User.query.filter_by(login_id=login_id).first()
             if existing_user:
                 session['username'] = login_id
-                return redirect(url_for('todo')) #성공했으니 todo로 이동
-            flash("ID가 잘못되었습니다. 회원가입을 먼저 진행하세요.")
-            return redirect(url_for("login")) #실패하면 다시 메인(login) 페이지로 이동
-            
+                return redirect(url_for('todo'))
+            else:
+                flash("ID가 잘못되었습니다. 회원가입을 먼저 진행하세요.")
+                return render_template('login.html', login=False)
         elif action == 'Join':
             existing_user = User.query.filter_by(login_id=login_id).first()
             if existing_user:
                 flash("이미 존재하는 ID입니다. 다른 ID로 시도하세요.")
-                return redirect(url_for("login"))
-        # 사용자 정보 DB에 저장
+                return render_template('login.html', login=False)
+            # 사용자 정보 DB에 저장
             new_user = User(login_id=login_id)
             db.session.add(new_user)
             try:
@@ -35,17 +35,64 @@ def login():
             except IntegrityError:
                 db.session.rollback()
                 flash("DB 오류. 다시 시도해주세요.")
-                return redirect(url_for("login"))
+                return render_template('login.html', login=False)
             session['username'] = login_id
             return redirect(url_for('todo'))
 
     return render_template('login.html', login=False)
 
+@app.route('/add_todo', methods=['POST'])
+def add_todo():
+    print("add_todo 라우트 실행됨")  # ← 이 줄로 서버 콘솔에서 찍힘
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    login_id = session['username']
+    user = User.query.filter_by(login_id=login_id).first()
+    task = request.form.get('task')
+    if not task:
+        flash("할 일 내용을 입력하세요!")
+        return redirect(url_for('todo'))
+    new_todo = Todo(task=task, due_date=date.today(), user_id=user.id)
+    db.session.add(new_todo)
+    db.session.commit()
+    print("할 일 저장 완료!")  # ← 이 줄로 서버 콘솔에서 찍힘
+    return redirect(url_for('todo'))
+
+
 @app.route('/todo')
 def todo():
-    if 'username' in session:
-        return render_template('todo.html', username=session['username'])
-    return redirect(url_for('login'))
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    login_id = session['username']
+    user = User.query.filter_by(login_id=login_id).first()
+    today = date.today()
+    # 오늘 할 일
+    todos_today = Todo.query.filter_by(user_id=user.id, due_date=today, done=False).all()
+    # 전에 못한 일 (done=False, due_date != today)
+    prev_todos = Todo.query.filter(
+        Todo.user_id == user.id,
+        Todo.due_date != today,
+        Todo.done == False
+    ).all()
+
+    return render_template(
+        'todo.html',
+        username=login_id,
+        todos_today=todos_today,
+        prev_todos=prev_todos,
+        today=today.strftime("%Y년 %m월 %d일 %A")
+    )
+
+@app.route('/todo/done', methods=['POST'])
+def mark_done():
+    todo_id = request.json.get('todo_id')
+    todo = Todo.query.get(todo_id)
+    if todo:
+        todo.done = True
+        db.session.commit()
+        return jsonify({'result': 'success'})
+    return jsonify({'result': 'fail'}), 404
 
 @app.route('/logout')
 def logout():
