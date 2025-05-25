@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>체크리스트</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
+  </head>
+  <body>
+    <div class="container">
+      
+      {% if login == True %}
+        <h3>로그인에 성공했습니다. {{username}}님 어서오세요!</h3>
+        <a href="{{ url_for('logout') }}">로그아웃</a>
+      {% else %}
+        <form method="post" class="login-form" action="/">
+          <h1 class="title">CheckList</h1>
+          
+          <label for="loginId">아이디</label>
+          <input type="text" id="loginId" name="loginId" placeholder="ID" required />
+
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <ul class="flashes">
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          {% endwith %}
+
+          <button type="submit" name="action" value="Login">Login</button>
+          <button type="submit" name="action" value="Join">Join</button>
+        </form>
+      {% endif %}
+    </div>
+  </body>
+</html>
+
+
