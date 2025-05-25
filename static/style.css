@@ -89,3 +89,13 @@ label {
   margin-bottom: 10px;
 }
 
+/* 로그인 시 경고 문장 */
+.flashes {
+  list-style: none;
+  padding: 0;
+  margin: -10px 0 15px; /* 위 여백 살짝 줄이고 아래 공간 확보 */
+  font-size: 11px;
+  color: #e74c3c; 
+  text-align: left;
+}
+
