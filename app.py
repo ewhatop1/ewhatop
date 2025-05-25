@@ -70,7 +70,7 @@ def todo():
     user = User.query.filter_by(login_id=login_id).first()
     today = date.today()
     # 오늘 할 일
-    todos_today = Todo.query.filter_by(user_id=user.id, due_date=today, done=False).all()
+    todos_today = Todo.query.filter_by(user_id=user.id, due_date=today).all()
     # 전에 못한 일 (done=False, due_date != today)
     prev_todos = Todo.query.filter(
         Todo.user_id == user.id,
