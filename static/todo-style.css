@@ -1,0 +1,135 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #C7C7C7;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  width: 1280px;
+  height: 832px;
+}
+/* 할 일 목록 제목 */
+.todo-list-section h2 {
+  font-style: italic;
+  font-weight: 300;
+  font-size: 36px;
+  color: #000;
+  border-bottom: 1px solid #000;
+  margin-bottom: 16px;
+}
+/* 전에 못한 일 제목 */
+.prev-todo-section h3 {
+  font-style: italic;
+  font-weight: 300;
+  font-size: 36px;
+  color: #000;
+  border-bottom: 1px solid #000;
+  margin-bottom: 16px;
+}
+/* 날짜 텍스트 */
+.date {
+  font-style: italic;
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 39px;
+  color: #000;
+  margin-bottom: 10px;
+}
+/* 할 일 항목 스타일 */
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+ /* 각 항목 li 안의 label 정렬*/
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+/*할 일 텍스트*/
+.todo-item span{
+  flex: 1;
+  word-break: break-word;
+  color: #333;
+}
+/* 체크박스 공통 스타일 */
+.todo-item input[type="checkbox"] {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  margin-left: 10px;
+}
+@media (max-width: 600px) {
+  .todo-item {
+    font-size: 14px;
+    padding: 10px;
+  }
+  .todo-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+  }
+}
+/* 할 일 추가 버튼 */
+.add-todo {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 29px;
+  color: #6E6E6E;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}
+.add-task-box {
+  display: none; /* 처음엔 안 보이게 */
+  margin-top: 10px;
+}
+/* 메모 입력 영역 */
+.memo-section {
+  position: absolute;
+  width: 535px;
+  height: 223px;
+  left: 59px;
+  top: 565px;
+  background: #D9D9D9;
+  border-radius: 10px;
+  padding: 15px;
+}
+.memo-section h4 {
+  font-size: 24px;
+  color: #6E6E6E;
+  margin-bottom: 10px;
+}
+.memo-section textarea {
+  width: 100%;
+  height: 160px;
+  border: none;
+  background: transparent;
+  resize: none;
+  font-size: 16px;
+  line-height: 24px;
+  color: #000;
+}
+/* 공통 구분선 스타일. */
+.section-divider {
+  border: none;
+  height: 2px;
+  margin: 40px 0;
+}
+/* 검정 구분선 */
+.black-divider {
+  background-color: #000;
+}
+/* 섹션 레이아웃 */
+.main-sections {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+.todo-list-section,
+.prev-todo-section {
+  width: 40%;
+  margin-left: 0;
+}
