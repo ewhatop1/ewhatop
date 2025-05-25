@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang = "ko">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>체크리스트</title>
@@ -16,7 +16,7 @@
     .prev-todo-list li {
       margin-top: 10px;
     }
-  </style>
+    </style>
 </head>
 <body>
   <div class="todo-container">
@@ -30,93 +30,78 @@
       <div class="todo-list-section">
         <h2 class="section-title todo-title">할 일 목록</h2>
         <div class="date"></div>
-
         <ol class="todo-list">
-          <!-- 할 일 목록이 반복문으로 들어가는 자리 -->
           {% for t in todos_today %}
             <li>
               <label class="todo-item">
                 <span>{{ t.task }}</span>
                 <input type="checkbox"
-                  id="todo{{ t.id }}"
-                  {% if t.done %}checked{% endif %}
-                  onclick="markDone({{ t.id }}, this.checked)">
+                       id="todo{{ t.id }}"
+                       {% if t.done %}checked{% endif %}
+                       onclick="markDone({{ t.id }}, this.checked)">
               </label>
             </li>
           {% endfor %}
         </ol>
-
         <!-- 할 일 추가 버튼-->
         <form action="/add_todo" method="post" style="margin-top: 20px;">
           <input type="text" name="task" placeholder="할 일을 입력하세요" required>
-          <button type="submit">+ 할 일 추가</button>
+          <button type="submit" class="add-todo">+ 할 일 추가</button>
         </form>
       </div>
-
       <!-- 전에 못한 일 제목 위에 검정 구분선 -->
       <hr class="section-divider black-divider">
-
       <!-- 오른쪽: 전에 못한 일 -->
       <div class="prev-todo-section">
         <h2 class="section-title prev-title">전에 못한 일</h2>
         <ul class="prev-todo-list">
-          <li>
-            <input type="checkbox" id="prev1">
-            <label for="prev1">(2025.05.24) 디비</label>
-          </li>
-          <li>
-            <input type="checkbox" id="prev2">
-            <label for="prev2">캘린더</label>
-          </li>
+          {% for pt in prev_todos %}
+            <li>
+              <label class="todo-item">
+                <span>({{ pt.due_date.strftime('%Y-%m-%d') }}) {{ pt.task }}</span>
+                <input type="checkbox"
+                       id="prevtodo{{ pt.id }}"
+                       {% if pt.done %}checked{% endif %}
+                       onclick="markDone({{ pt.id }}, this.checked)">
+              </label>
+            </li>
+          {% endfor %}
         </ul>
       </div>
-      <!-- :흰색_확인_표시: main-sections 끝 -->
     </div>
     <!-- main-sections div 닫힘 -->
-
   </div>
   <!-- todo-container div 닫힘 -->
-</body>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const addButton = document.querySelector(".add-todo");
-    const inputBox = document.querySelector(".add-task-box");
-    const todoList = document.querySelector(".todo-list");
-    const dateDiv = document.querySelector(".date");
-    // 오늘 날짜 한국어로 표시
-    const today = new Date().toLocaleDateString("ko-KR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      weekday: "long"
+  <!-- 오늘 날짜만 JS로 표시 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const dateDiv = document.querySelector(".date");
+      // 오늘 날짜 한국어로 표시
+      const today = new Date().toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        weekday: "long"
+      });
+      dateDiv.textContent = today;
     });
-    dateDiv.textContent = today;
-    // 할 일 추가 버튼 클릭 이벤트
-    addButton.addEventListener("click", function () {
-      const task = inputBox.value.trim();
-      // 입력창이 보이지 않으면 보여주기
-      if (inputBox.offsetParent === null) {
-        inputBox.style.display = "inline-block";
-        inputBox.focus();
-        return;
-      }
-      // 입력값이 있을 경우, 새로운 할 일 추가
-      if (task !== "") {
-        const newTodo = document.createElement("li");
-        const newId = "todo" + Date.now();
-        newTodo.innerHTML = `
-          <label class="todo-item">
-            <span>${task}</span>
-            <input type="checkbox" id="${newId}">
-          </label>
-        `;
-        todoList.appendChild(newTodo);
-        // 입력창 초기화 및 숨기기
-        inputBox.value = "";
-        inputBox.style.display = "none";
-      }
-    });
-  });
-</script>
+  </script>
+  <!-- 체크박스 AJAX 처리 -->
+  <script>
+    function markDone(todoId, checked) {
+      fetch('/todo/done', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({todo_id: todoId, done: checked})
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.result !== 'success') {
+          alert('DB 갱신 실패!');
+        }
+      });
+    }
+  </script>
+</body>
 </html>
