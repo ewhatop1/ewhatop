@@ -19,14 +19,15 @@ def login():
             if existing_user:
                 session['username'] = login_id
                 return redirect(url_for('todo'))
-            else:
-                flash("ID가 잘못되었습니다. 회원가입을 먼저 진행하세요.")
-                return render_template('login.html', login=False)
+            flash("ID가 잘못되었습니다. 회원가입을 먼저 진행하세요.")
+            return redirect(url_for('login'))
+            
         elif action == 'Join':
             existing_user = User.query.filter_by(login_id=login_id).first()
             if existing_user:
                 flash("이미 존재하는 ID입니다. 다른 ID로 시도하세요.")
-                return render_template('login.html', login=False)
+                return redirect(url_for('login'))
+                
             # 사용자 정보 DB에 저장
             new_user = User(login_id=login_id)
             db.session.add(new_user)
@@ -35,7 +36,8 @@ def login():
             except IntegrityError:
                 db.session.rollback()
                 flash("DB 오류. 다시 시도해주세요.")
-                return render_template('login.html', login=False)
+                return redirect(url_for('login'))
+                
             session['username'] = login_id
             return redirect(url_for('todo'))
 
