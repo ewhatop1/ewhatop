@@ -155,14 +155,17 @@ button[type="submit"]:active {
   transform: scale(0.97);      /* 눌리는 듯한 효과 */
 }
 
-.todo-item {
-  display: flex;
-  align-items: center;
-  flex-direction: row-reverse; /* 체크박스가 오른쪽으로 이동 */
-  gap: 8px;
-}
-
+/* 체크박스가 체크됐을 때 글씨 스타일만 바꾸기 */
 .todo-item input[type="checkbox"]:checked + span {
   text-decoration: line-through;
   color: gray;
 }
+
+/* 체크박스와 글씨 배치를 위한 기본 스타일 */
+.todo-item {
+  display: flex;
+  flex-direction: row-reverse;  /* 글씨 뒤에 체크박스 배치 */
+  align-items: center;
+  gap: 8px;
+}
+
