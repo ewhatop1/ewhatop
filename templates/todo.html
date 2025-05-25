@@ -34,11 +34,11 @@
           {% for t in todos_today %}
             <li>
               <label class="todo-item">
-                <span>{{ t.task }}</span>
                 <input type="checkbox"
-                       id="todo{{ t.id }}"
-                       {% if t.done %}checked{% endif %}
-                       onclick="markDone({{ t.id }}, this.checked)">
+                  id="todo{{ t.id }}"
+                  {% if t.done %}checked{% endif %}
+                  onclick="markDone({{ t.id }}, this.checked)">
+                <span>{{ t.task }}</span>
               </label>
             </li>
           {% endfor %}
