@@ -22,53 +22,62 @@
   <div class="todo-container">
     <!-- 로그아웃 버튼-->
     <div class="icon logout-icon"></div>
-      <form action="{{ url_for('logout') }}" method="get" style="display:inline;">
-        <button type="submit" style="cursor:pointer;">로그아웃</button>
-      </form>
-    </div>
-
-  <div class="main-sections">
-    <div class="todo-list-section">
-      <h2 class="section-title todo-title">할 일 목록</h2>
-      <div class="date"></div>
-
-    <ol class="todo-list">
-      <!-- 할 일 목록이 반복문으로 들어가는 자리 -->
-      {% for t in todos_today %}
-        <li>
-          <label class="todo-item">
-            <span>{{ t.task }}</span>
-            <input type="checkbox" id="todo{{ t.id }}">
-          </label>
-        </li>
-      {% endfor %}
-    </ol>
-
-    <!-- 할 일 추가 버튼-->
-    <form action="/add_todo" method="post" style="margin-top: 20px;">
-      <input type="text" name="task" placeholder="할 일을 입력하세요" required>
-      <button type="submit">+ 할 일 추가</button>
+    <form action="{{ url_for('logout') }}" method="get" style="display:inline;">
+      <button type="submit" style="cursor:pointer;">로그아웃</button>
     </form>
-  </div>
-  
-  <!-- 전에 못한 일 제목 위에 검정 구분선 -->
-  <hr class="section-divider black-divider">
 
-  <!-- 오른쪽: 전에 못한 일 -->
-  <div class="prev-todo-section">
-    <h2 class="section-title prev-title">전에 못한 일</h2>
-    <ul class="prev-todo-list">
-      <li>
-        <input type="checkbox" id="prev1">
-        <label for="prev1">(2025.05.24) 디비</label>
-      </li>
-      <li>
-        <input type="checkbox" id="prev2">
-        <label for="prev2">캘린더</label>
-      </li>
-    </ul>
+    <div class="main-sections">
+      <div class="todo-list-section">
+        <h2 class="section-title todo-title">할 일 목록</h2>
+        <div class="date"></div>
+
+        <ol class="todo-list">
+          <!-- 할 일 목록이 반복문으로 들어가는 자리 -->
+          {% for t in todos_today %}
+            <li>
+              <label class="todo-item">
+                <span>{{ t.task }}</span>
+                <input type="checkbox"
+                  id="todo{{ t.id }}"
+                  {% if t.done %}checked{% endif %}
+                  onclick="markDone({{ t.id }}, this.checked)">
+              </label>
+            </li>
+          {% endfor %}
+        </ol>
+
+        <!-- 할 일 추가 버튼-->
+        <form action="/add_todo" method="post" style="margin-top: 20px;">
+          <input type="text" name="task" placeholder="할 일을 입력하세요" required>
+          <button type="submit">+ 할 일 추가</button>
+        </form>
+      </div>
+
+      <!-- 전에 못한 일 제목 위에 검정 구분선 -->
+      <hr class="section-divider black-divider">
+
+      <!-- 오른쪽: 전에 못한 일 -->
+      <div class="prev-todo-section">
+        <h2 class="section-title prev-title">전에 못한 일</h2>
+        <ul class="prev-todo-list">
+          <li>
+            <input type="checkbox" id="prev1">
+            <label for="prev1">(2025.05.24) 디비</label>
+          </li>
+          <li>
+            <input type="checkbox" id="prev2">
+            <label for="prev2">캘린더</label>
+          </li>
+        </ul>
+      </div>
+      <!-- :흰색_확인_표시: main-sections 끝 -->
+    </div>
+    <!-- main-sections div 닫힘 -->
+
   </div>
-</div> <!-- :흰색_확인_표시: main-sections 끝 -->
+  <!-- todo-container div 닫힘 -->
+</body>
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const addButton = document.querySelector(".add-todo");
