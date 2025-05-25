@@ -30,17 +30,25 @@
   <div class="main-sections">
     <div class="todo-list-section">
       <h2 class="section-title todo-title">할 일 목록</h2>
-      <div class="date">날짜가져오는거(JAVA)</div>
+      <div class="date"></div>
 
     <ol class="todo-list">
-       
-      </ol>
+      <!-- 할 일 목록이 반복문으로 들어가는 자리 -->
+      {% for t in todos_today %}
+        <li>
+          <label class="todo-item">
+            <span>{{ t.task }}</span>
+            <input type="checkbox" id="todo{{ t.id }}">
+          </label>
+        </li>
+      {% endfor %}
+    </ol>
 
     <!-- 할 일 추가 버튼-->
-    <div class="add-task-wrapper">
-      <input type="text" class="add-task-box" placeholder="할 일을 입력하세요" style="display: none;">
-      <button class="add-todo">+ 할 일 추가</button>
-    </div>
+    <form action="/add_todo" method="post" style="margin-top: 20px;">
+      <input type="text" name="task" placeholder="할 일을 입력하세요" required>
+      <button type="submit">+ 할 일 추가</button>
+    </form>
   </div>
   
   <!-- 전에 못한 일 제목 위에 검정 구분선 -->
@@ -90,8 +98,8 @@
         const newId = "todo" + Date.now();
         newTodo.innerHTML = `
           <label class="todo-item">
-            <input type="checkbox" id="${newId}">
             <span>${task}</span>
+            <input type="checkbox" id="${newId}">
           </label>
         `;
         todoList.appendChild(newTodo);
