@@ -5,8 +5,7 @@ from datetime import datetime, timezone
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)       # 고유 ID (자동 증가)
-    login_id = db.Column(db.String(80), unique=True)   # 로그인 ID (유니크)
-    login_pw = db.Column(db.String(120))                # 비밀번호
+    id_hash = db.Column(db.String(255), unique=True, nullable=False)   # 로그인 ID (유니크, 해싱)
     
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
