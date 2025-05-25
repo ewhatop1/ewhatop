@@ -89,8 +89,10 @@
         const newTodo = document.createElement("li");
         const newId = "todo" + Date.now();
         newTodo.innerHTML = `
-          <input type="checkbox" id="${newId}">
-          <label for="${newId}">${task}</label>
+          <label class="todo-item">
+            <span>${task}</span>
+            <input type="checkbox" id="${newId}">
+          </label>
         `;
         todoList.appendChild(newTodo);
         // 입력창 초기화 및 숨기기
