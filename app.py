@@ -8,6 +8,9 @@ app.secret_key = 'your_secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db.init_app(app)
 
+with app.app_context():
+    db.create_all()
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
